@@ -43,7 +43,6 @@ CREATE TABLE ORGANIZATIONS(
 
 CREATE TABLE SERVICE_BINDINGS(
     ID                      CHAR(37)    NOT NULL    PRIMARY KEY,
-    NAME                    TEXT        NOT NULL,
     APP_ID                  CHAR(37)    NOT NULL,
     SERVICE_INSTANCE_ID     CHAR(37)    NOT NULL 
 );
@@ -56,21 +55,21 @@ sqlite3 $OUTPUT_DIR/database.db < commands.txt
 cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/apps.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
 cat $INPUT_DIR/services.json | jq '.resources[] | .metadata.guid+"|"+.entity.label' -r > $INPUT_DIR/services.csv
-touch $INPUT_DIR/service_instances.csv
-touch $INPUT_DIR/service_plans.csv
-touch $INPUT_DIR/service_bindings.csv
+cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-plans.csv
+cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-instances.csv
+cat $INPUT_DIR/service-bindings.json | jq '.resources[] | .metadata.guid+"|"+.entity.app_guid+"|"+.entity.service_instance_guid' -r > $INPUT_DIR/service-bindings.csv
 
 # populate database
 cat > bulk_insert.txt <<EOF
 .separator |
 .import $INPUT_DIR/apps.csv APPS
 .import $INPUT_DIR/services.csv SERVICES
-.import $INPUT_DIR/service_instances.csv SERVICE_INSTANCES
-.import $INPUT_DIR/service_plans.csv SERVICE_PLANS
+.import $INPUT_DIR/service-instances.csv SERVICE_INSTANCES
+.import $INPUT_DIR/service-plans.csv SERVICE_PLANS
 .import $INPUT_DIR/orgs.csv ORGANIZATIONS
-.import $INPUT_DIR/service_bindings.csv SERVICE_BINDINGS
+.import $INPUT_DIR/service-bindings.csv SERVICE_BINDINGS
 EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
 
-sqlite3 -cmd 'SELECT * FROM APPS; SELECT* FROM ORGANIZATIONS; SELECT * FROM SERVICES;' $OUTPUT_DIR/database.db < /dev/null
+sqlite3 -cmd 'SELECT * FROM SERVICE_INSTANCES; SELECT* FROM SERVICE_PLANS; SELECT * FROM SERVICE_BINDINGS;' $OUTPUT_DIR/database.db < /dev/null
