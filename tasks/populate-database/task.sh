@@ -10,6 +10,8 @@ source source-repo/scripts/install-jq.sh
 export OUTPUT_DIR=database
 export INPUT_DIR=cf-data
 
+mkdir -p $OUTPUT_DIR
+
 # Create Database
 sqlite3 -cmd '.databases' $OUTPUT_DIR/database.db
 
