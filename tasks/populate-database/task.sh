@@ -71,5 +71,3 @@ cat > bulk_insert.txt <<EOF
 EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
-
-sqlite3 -cmd 'SELECT * FROM SERVICE_INSTANCES; SELECT* FROM SERVICE_PLANS; SELECT * FROM SERVICE_BINDINGS;' $OUTPUT_DIR/database.db < /dev/null
