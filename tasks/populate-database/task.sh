@@ -73,4 +73,4 @@ EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
 
-sqlite3 -cmd 'SELECT * FROM APPS; SELECT* FROM ORGANIZATIONS; SELECT * FROM SERVICES;' $OUTPUT_DIR/database.db
+sqlite3 -cmd 'SELECT * FROM APPS; SELECT* FROM ORGANIZATIONS; SELECT * FROM SERVICES;' $OUTPUT_DIR/database.db < /dev/null
