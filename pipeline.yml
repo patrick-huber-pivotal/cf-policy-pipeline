@@ -23,4 +23,4 @@ jobs:
     file: source-repo/tasks/populate-database/task.yml
 
   - task: applications-without-autoscaler
-    file: source-repo/tasks/applications-without-autoscaler.yml
+    file: source-repo/tasks/applications-without-autoscaler/task.yml
