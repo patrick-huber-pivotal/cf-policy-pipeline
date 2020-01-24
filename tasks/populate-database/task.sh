@@ -13,7 +13,7 @@ export INPUT_DIR=cf-data
 mkdir -p $OUTPUT_DIR
 
 # Create Database
-sqlite3 -cmd '.databases' $OUTPUT_DIR/database.db
+sqlite3 -cmd '.databases' $OUTPUT_DIR/database.db </dev/null
 
 cat > commands.txt <<EOF
 CREATE TABLE APPS(
