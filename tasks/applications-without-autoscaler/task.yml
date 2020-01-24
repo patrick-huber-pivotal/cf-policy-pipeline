@@ -9,6 +9,7 @@ image_resource:
 
 inputs:
 - name: source-repo
+- name: database
 
 run:
   path: source-repo/tasks/applications-without-autoscaler/task.sh
