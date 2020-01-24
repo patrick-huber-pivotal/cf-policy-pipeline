@@ -1,0 +1,22 @@
+---
+    resources:
+    - name: source-repo
+      type: git
+      source:
+        uri: https://github.com/patrick-huber-pivotal/cf-policy-pipeline
+        username: ((git_username))
+        password: ((git_password))
+
+    jobs:
+    - name: applications-without-autoscaler
+      public: true
+      plan:
+      - get: source-repo
+      - task: push
+        file: source-repo/tasks/applications-without-autoscaler/task.yml
+        params:
+          CF_USERNAME: ((cf_username))
+          CF_TARGET: ((cf_target))
+          CF_PASSWORD: ((cf_password))
+          CF_ORG: ((cf_org))
+          CF_SPACE: ((cf_space))
