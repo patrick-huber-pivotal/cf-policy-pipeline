@@ -18,5 +18,4 @@
           CF_USERNAME: ((cf_username))
           CF_TARGET: ((cf_target))
           CF_PASSWORD: ((cf_password))
-          CF_ORG: ((cf_org))
-          CF_SPACE: ((cf_space))
+          EXCLUDE_ORGS: ((exclude_orgs))
