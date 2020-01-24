@@ -14,7 +14,7 @@ outputs:
 - name: cf-data
 
 run:
-  path: source-repo/tasks/populate-database/task.sh
+  path: source-repo/tasks/export-cf-data/task.sh
 
 params:
     # The cloud foundry username to login and query the system (cf cli username)
