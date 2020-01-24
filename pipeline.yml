@@ -9,7 +9,7 @@ resources:
 jobs:
 - name: create-database
   plan:
-    
+
   - get: source-repo
 
   - task: export-cf-data
@@ -21,3 +21,6 @@ jobs:
 
   - task: populate-database
     file: source-repo/tasks/populate-database/task.yml
+
+  - task: applications-without-autoscaler
+    file: source-repo/tasks/applications-without-autoscaler.yml
