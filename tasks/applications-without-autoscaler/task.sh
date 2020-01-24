@@ -22,3 +22,4 @@ EOF
 
 # run the query
 sqlite3 $INPUT_DIR/database.db < query.txt 
+exit 1
