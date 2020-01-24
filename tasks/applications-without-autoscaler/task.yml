@@ -13,13 +13,3 @@ inputs:
 
 run:
   path: source-repo/tasks/applications-without-autoscaler/task.sh
-
-params:
-    # The cloud foundry username to login and query the system (cf cli username)
-    CF_USERNAME:
-    # The api target for cloud foundry (cf cli target)
-    CF_TARGET:
-    # The cloud foundry password to login and query the system (cf cli password)
-    CF_PASSWORD:
-    # A comma delimited list of orgs to exclude
-    EXCLUDE_ORGS:
