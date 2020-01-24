@@ -1,0 +1,7 @@
+.separator |
+.import data/apps.csv APPS
+.import data/services.csv SERVICES
+.import data/service_instances.csv SERVICE_INSTANCES
+.import data/service_plans.csv SERVICE_PLANS
+.import data/orgs.csv ORGANIZATIONS
+.import data/service_bindings.csv SERVICE_BINDINGS

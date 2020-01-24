@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: ubuntu
+    tag: latest
+
+inputs:
+- name: source-repo
+
+outputs:
+- name: cf-data
+
+run:
+  path: source-repo/tasks/populate-database/task.sh
+
+params:
+    # The cloud foundry username to login and query the system (cf cli username)
+    CF_USERNAME:
+    # The api target for cloud foundry (cf cli target)
+    CF_TARGET:
+    # The cloud foundry password to login and query the system (cf cli password)
+    CF_PASSWORD:
