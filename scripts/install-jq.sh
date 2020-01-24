@@ -1,3 +1,3 @@
 #!/bin/bash
 
-apt-get install jq
+apt-get install jq -y
