@@ -11,7 +11,7 @@ export INPUT_DIR=database
 export ORGS=`echo $EXCLUDE_ORGS | yq r - --tojson | jq '. | @csv' -r`
 
 cat > query.txt <<EOF
-SELECT * 
+SELECT a.Name, sp.Name, o.Name 
 FROM APPS a
 LEFT JOIN SERVICE_BINDINGS sb
   on sb.APP_ID = a.ID
@@ -30,4 +30,3 @@ EOF
 
 # run the query
 sqlite3 $INPUT_DIR/database.db < query.txt 
-exit 1
