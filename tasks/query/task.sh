@@ -5,6 +5,7 @@ set -uex
 export INPUT_DIR=database
 
 echo ".headers on" > query.txt
+echo ".mode column" >> query.txt
 echo $QUERY >> query.txt
 
 # run the query
