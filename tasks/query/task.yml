@@ -9,6 +9,7 @@ image_resource:
     
 inputs:
 - name: database
+- name: source-repo
     
 run:
   path: source-repo/tasks/query/task.sh
