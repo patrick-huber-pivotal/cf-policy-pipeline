@@ -23,7 +23,7 @@ LEFT JOIN SERVICES s
 LEFT JOIN SPACES sp
   on a.SPACE_ID = sp.ID
 LEFT JOIN ORGANIZATIONS o
-  on o.ID = sp.ORGANZATION_ID
+  on o.ID = sp.ORGANIZATION_ID
 WHERE sb.ID is null
   and o.Name not in ($ORGS);
 EOF
