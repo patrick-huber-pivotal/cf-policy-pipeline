@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -uex
+set -ue
 
 export INPUT_DIR=database
 
