@@ -2,11 +2,6 @@
 
 set -uex
 
-source source-repo/scripts/init.sh
-source source-repo/scripts/install-cf.sh
-source source-repo/scripts/install-yq.sh
-source source-repo/scripts/install-jq.sh
-
 export OUTPUT_DIR=cf-data
 
 # login to cf api 

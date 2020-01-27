@@ -2,11 +2,6 @@
 
 set -uex
 
-source source-repo/scripts/init.sh
-source source-repo/scripts/install-sqlite.sh
-source source-repo/scripts/install-yq.sh
-source source-repo/scripts/install-jq.sh
-
 export OUTPUT_DIR=database
 export INPUT_DIR=cf-data
 
