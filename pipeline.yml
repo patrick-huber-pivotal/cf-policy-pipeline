@@ -35,4 +35,31 @@ jobs:
   - task: populate-database
     file: source-repo/tasks/populate-database/task.yml  
   - put: azure-bucket
-    file: database/*.db
+    params:
+      file: database/database.db
+
+- name: apps-without-autoscaler-query
+  plan:
+  - get: source-repo
+  - get: azure-bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: azure-bucket
+    params:
+      QUERY: |
+         SELECT a.Name, sp.Name, o.Name 
+         FROM APPS a
+         LEFT JOIN SERVICE_BINDINGS sb
+           on sb.APP_ID = a.ID
+         LEFT JOIN SERVICE_INSTANCES si
+           on si.ID = sb.SERVICE_INSTANCE_ID
+         LEFT JOIN SERVICES s
+           on  s.ID = si.SERVICE_ID
+           and s.NAME = 'app-autoscaler'
+         LEFT JOIN SPACES sp
+           on a.SPACE_ID = sp.ID
+         LEFT JOIN ORGANIZATIONS o
+           on o.ID = sp.ORGANIZATION_ID
+         WHERE sb.ID is null
+           and o.Name not in ("system");
