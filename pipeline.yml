@@ -48,7 +48,9 @@ jobs:
       database: azure-bucket
     params:
       QUERY: |
-         SELECT a.Name, sp.Name, o.Name 
+         SELECT a.Name as APP, 
+                sp.Name as SPACE, 
+                o.Name as ORG
          FROM APPS a
          LEFT JOIN SERVICE_BINDINGS sb
            on sb.APP_ID = a.ID
