@@ -2,9 +2,6 @@
 
 set -uex
 
-source source-repo/scripts/init.sh
-source source-repo/scripts/install-sqlite.sh
-
 export INPUT_DIR=database
 
 echo $QUERY > query.txt
