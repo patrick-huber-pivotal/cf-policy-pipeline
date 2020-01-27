@@ -14,6 +14,7 @@ cf api $CF_TARGET --skip-ssl-validation
 cf login -u $CF_USERNAME -p $CF_PASSWORD < /dev/null
 
 cf curl /v3/organizations > $OUTPUT_DIR/orgs.json
+cf curl /v3/spaces > $OUTPUT_DIR/spaces.json
 cf curl /v3/apps > $OUTPUT_DIR/apps.json
 cf curl /v2/service_instances > $OUTPUT_DIR/service-instances.json
 cf curl /v2/service_bindings > $OUTPUT_DIR/service-bindings.json
