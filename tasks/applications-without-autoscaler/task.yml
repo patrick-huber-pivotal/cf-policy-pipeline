@@ -13,3 +13,7 @@ inputs:
 
 run:
   path: source-repo/tasks/applications-without-autoscaler/task.sh
+
+params:
+  # yaml array of orgs to exclude
+  EXCLUDED_ORGS:

@@ -24,3 +24,5 @@ jobs:
 
   - task: applications-without-autoscaler
     file: source-repo/tasks/applications-without-autoscaler/task.yml
+    params:
+      EXCLUDE_ORGS: ((exclude_orgs))

@@ -15,8 +15,15 @@ sqlite3 -cmd '.databases' $OUTPUT_DIR/database.db </dev/null
 
 cat > commands.txt <<EOF
 CREATE TABLE APPS(
-    ID      CHAR(37)    NOT NULL    PRIMARY KEY,
-    NAME    TEXT        NOT NULL
+    ID          CHAR(37)    NOT NULL    PRIMARY KEY,
+    NAME        TEXT        NOT NULL,
+    SPACE_ID    CHAR(37)    NOT NULL
+);
+
+CREATE TABLE SPACES(
+    ID              CHAR(37)    NOT NULL    PRIMARY KEY,
+    NAME            TEXT        NOT NULL,
+    ORGANZIATION_ID CHAR(37)    NOT NULL
 );
 
 CREATE TABLE SERVICES(
@@ -52,7 +59,8 @@ EOF
 sqlite3 $OUTPUT_DIR/database.db < commands.txt
 
 # create csv files
-cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/apps.csv
+cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid' -r > $INPUT_DIR/apps.csv
+cat $INPUT_DIR/spaces.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.organization.data.guid' -r > $INPUT_DIR/spaces.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
 cat $INPUT_DIR/services.json | jq '.resources[] | .metadata.guid+"|"+.entity.label' -r > $INPUT_DIR/services.csv
 cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-plans.csv
@@ -63,6 +71,7 @@ cat $INPUT_DIR/service-bindings.json | jq '.resources[] | .metadata.guid+"|"+.en
 cat > bulk_insert.txt <<EOF
 .separator |
 .import $INPUT_DIR/apps.csv APPS
+.import $INPUT_DIR/spaces.csv SPACES
 .import $INPUT_DIR/services.csv SERVICES
 .import $INPUT_DIR/service-instances.csv SERVICE_INSTANCES
 .import $INPUT_DIR/service-plans.csv SERVICE_PLANS

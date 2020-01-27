@@ -3,9 +3,12 @@
 set -uex
 
 source source-repo/scripts/init.sh
+source source-repo/scripts/install-jq.sh
+source source-repo/scripts/install-yq.sh
 source source-repo/scripts/install-sqlite.sh
 
 export INPUT_DIR=database
+export ORGS=`echo $EXCLUDE_ORGS | yq r - --tojson | jq '. | @csv' -r`
 
 cat > query.txt <<EOF
 SELECT * 
@@ -17,7 +20,12 @@ LEFT JOIN SERVICE_INSTANCES si
 LEFT JOIN SERVICES s
   on  s.ID = si.SERVICE_ID
   and s.NAME = 'app-autoscaler'
-WHERE sb.ID is null;
+LEFT JOIN SPACES sp
+  on a.SPACE_ID = sp.ID
+LEFT JOIN ORGANIZATIONS o
+  on o.ID = sp.ORGANZATION_ID
+WHERE sb.ID is null
+  and o.Name not in ($ORGS);
 EOF
 
 # run the query
