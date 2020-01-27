@@ -16,4 +16,4 @@ run:
 
 params:
   # yaml array of orgs to exclude
-  EXCLUDED_ORGS:
+  EXCLUDE_ORGS:
