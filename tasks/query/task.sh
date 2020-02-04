@@ -5,8 +5,7 @@ set -ue
 export INPUT_DIR=database
 
 echo ".headers on" > query.txt
-echo ".mode column" >> query.txt
 echo "$QUERY" >> query.txt
 
 # run the query
-sqlite3 $INPUT_DIR/database.db < query.txt 
+sqlite3 $INPUT_DIR/database.db < query.txt | column -t -n -s'|'
