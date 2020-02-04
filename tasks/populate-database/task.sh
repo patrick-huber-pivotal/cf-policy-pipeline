@@ -48,6 +48,13 @@ CREATE TABLE SERVICE_BINDINGS(
     APP_ID                  CHAR(37)    NOT NULL,
     SERVICE_INSTANCE_ID     CHAR(37)    NOT NULL 
 );
+
+CREATE TABLE CERTIFICATES(
+    PRODUCT_ID		CHAR(37)	NOT NULL,
+    VARIABLE_PATH	TEXT		NOT NULL,
+    VALID_FROM		TEXT,
+    VALID_UNTIL	TEXT
+);
 EOF
 
 # Create Schema
@@ -61,6 +68,7 @@ cat $INPUT_DIR/services.json | jq '.resources[] | .metadata.guid+"|"+.entity.lab
 cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-plans.csv
 cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-instances.csv
 cat $INPUT_DIR/service-bindings.json | jq '.resources[] | .metadata.guid+"|"+.entity.app_guid+"|"+.entity.service_instance_guid' -r > $INPUT_DIR/service-bindings.csv
+cat $INPUT_DIR/certificates.json | jq '.certificates[] | .product_guid+"|"+.variable_path+"|"+.valid_from+"|"+.valid_until' -r > $INPUT_DIR/certificates.csv
 
 # populate database
 cat > bulk_insert.txt <<EOF
@@ -72,6 +80,7 @@ cat > bulk_insert.txt <<EOF
 .import $INPUT_DIR/service-plans.csv SERVICE_PLANS
 .import $INPUT_DIR/orgs.csv ORGANIZATIONS
 .import $INPUT_DIR/service-bindings.csv SERVICE_BINDINGS
+.import $INPUT_DIR/certificates.csv CERTIFICATES
 EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
