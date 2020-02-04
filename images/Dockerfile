@@ -42,10 +42,11 @@ RUN wget -O om 'https://github.com/pivotal-cf/om/releases/download/4.4.2/om-linu
      mv om /usr/bin/om
 
 # move only the binary to the output image
-FROM ubuntu:latest 
+FROM ubuntu:bionic 
 COPY --from=build /usr/bin/sqlite3 /usr/bin/sqlite3
 COPY --from=build /usr/bin/jq /usr/bin/jq
 COPY --from=build /usr/bin/yq /usr/bin/yq
 COPY --from=build /usr/bin/cf /usr/bin/cf
 COPY --from=build /usr/bin/om /usr/bin/om
+COPY --from=build /usr/bin/column /usr/bin/column
 CMD /bin/bash
