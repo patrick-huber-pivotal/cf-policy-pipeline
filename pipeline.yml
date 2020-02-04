@@ -69,3 +69,15 @@ jobs:
            on o.ID = sp.ORGANIZATION_ID
          WHERE sb.ID is null
            and o.Name not in ("system");
+
+- name: certificate-expiration 
+  plan:
+  - get: source-repo
+  - get: azure-bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: azure-bucket
+    params:
+      QUERY: |
+        SELECT * FROM CERTIFICATES;
