@@ -11,5 +11,8 @@ inputs:
 - name: database
 - name: source-repo
     
+outputs:
+- name: results
+
 run:
   path: source-repo/tasks/query/task.sh
