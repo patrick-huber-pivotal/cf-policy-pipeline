@@ -6,7 +6,7 @@ ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update 
 
 # install wget, gcc and tcl packages
-RUN apt-get install wget build-essential tcl -y 
+RUN apt-get install wget build-essential tcl bsdmainutils -y
 
 # download and extract sqlite
 RUN wget -O sqlite.tar.gz \
