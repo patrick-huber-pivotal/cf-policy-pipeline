@@ -83,3 +83,17 @@ jobs:
         SELECT * 
         FROM CERTIFICATES
         ORDER BY datetime(VALID_UNTIL) ASC;
+
+- name: certificate-authority-expiration 
+  plan:
+  - get: source-repo
+  - get: azure-bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: azure-bucket
+    params:
+      QUERY: |
+        SELECT * 
+        FROM CERTIFICATE_AUTHORITIES
+        ORDER BY datetime(EXPIRES_ON) ASC;
