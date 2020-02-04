@@ -79,7 +79,7 @@ cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entit
 cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-instances.csv
 cat $INPUT_DIR/service-bindings.json | jq '.resources[] | .metadata.guid+"|"+.entity.app_guid+"|"+.entity.service_instance_guid' -r > $INPUT_DIR/service-bindings.csv
 cat $INPUT_DIR/certificates.json | jq '.certificates[] | .product_guid+"|"+.variable_path+"|"+.valid_from+"|"+.valid_until+"|"+.property_reference' -r > $INPUT_DIR/certificates.csv
-cat $INPUT_DIR/certificate_authorities.json | jq '.certificate_authorities[] | .guid + "|" + .issuer + "|" + .created_on + "|" + .expires_on + "|" + .active' > $INPUT_DIR/certificate_authorities.csv
+cat $INPUT_DIR/certificate_authorities.json | jq '.certificate_authorities[] | .guid + "|" + .issuer + "|" + .created_on + "|" + .expires_on + "|" + (.active | tostring)' > $INPUT_DIR/certificate_authorities.csv
 
 # populate database
 cat > bulk_insert.txt <<EOF
