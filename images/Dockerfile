@@ -36,10 +36,16 @@ RUN wget -O jq 'https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux
     chmod +x jq && \
     mv jq /usr/bin/jq
 
+# download and extract OM cli
+RUN wget -O om 'https://github.com/pivotal-cf/om/releases/download/4.4.2/om-linux-4.4.2' && \
+     chmod +x om && \
+     mv om /usr/bin/om
+
 # move only the binary to the output image
 FROM ubuntu:latest 
 COPY --from=build /usr/bin/sqlite3 /usr/bin/sqlite3
 COPY --from=build /usr/bin/jq /usr/bin/jq
 COPY --from=build /usr/bin/yq /usr/bin/yq
 COPY --from=build /usr/bin/cf /usr/bin/cf
+COPY --from=build /usr/bin/om /usr/bin/om
 CMD /bin/bash
