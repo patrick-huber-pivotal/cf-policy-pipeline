@@ -1,4 +1,4 @@
-FROM ubuntu:latest as build
+FROM ubuntu:bionic as build
 
 ENV DEBIAN_FRONTEND noninteractive
 
