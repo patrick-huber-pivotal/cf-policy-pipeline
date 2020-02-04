@@ -80,4 +80,6 @@ jobs:
       database: azure-bucket
     params:
       QUERY: |
-        SELECT * FROM CERTIFICATES;
+        SELECT * 
+        FROM CERTIFICATES
+        ORDER BY datetime(VALID_UNTIL) ASC;
