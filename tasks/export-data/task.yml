@@ -14,7 +14,7 @@ outputs:
 - name: cf-data
 
 run:
-  path: source-repo/tasks/export-cf-data/task.sh
+  path: source-repo/tasks/export-data/task.sh
 
 params:
     # The cloud foundry username to login and query the system (cf cli username)
@@ -23,3 +23,7 @@ params:
     CF_TARGET:
     # The cloud foundry password to login and query the system (cf cli password)
     CF_PASSWORD:
+    OM_TARGET:
+    OM_USERNAME:
+    OM_PASSWORD:
+    OM_SKIP_SSL_VALIDATION:
