@@ -43,6 +43,18 @@ CREATE TABLE ORGANIZATIONS(
     NAME    TEXT        NOT NULL
 );
 
+CREATE TABLE ORGANIZATION_ANNOTATIONS(
+    ORGANIZATION_ID     CHAR(37)	NOT NULL,
+    KEY                 TEXT            NOT NULL,
+    VALUE               TEXT            NOT NULL
+);
+
+CREATE TABLE ORGANIZATION_LABELS(
+    ORGANIZATION_ID     CHAR(37)	NOT NULL,
+    KEY                 TEXT            NOT NULL,
+    VALUE               TEXT            NOT NULL
+);
+
 CREATE TABLE SERVICE_BINDINGS(
     ID                      CHAR(37)    NOT NULL    PRIMARY KEY,
     APP_ID                  CHAR(37)    NOT NULL,
@@ -74,6 +86,8 @@ sqlite3 $OUTPUT_DIR/database.db < commands.txt
 cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid' -r > $INPUT_DIR/apps.csv
 cat $INPUT_DIR/spaces.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.organization.data.guid' -r > $INPUT_DIR/spaces.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
+cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.labels | to_entries | select (.[] != null)[] | $parent.guid + "|" + .key + "|" + .value' -r > $INPUT_DIR/org_labels.csv
+cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.annotations | to_entries | select (.[] != null)[] | $parent.guid + "|" + .key + "|" + .value' -r > $INPUT_DIR/org_labels.csv
 cat $INPUT_DIR/services.json | jq '.resources[] | .metadata.guid+"|"+.entity.label' -r > $INPUT_DIR/services.csv
 cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-plans.csv
 cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-instances.csv
