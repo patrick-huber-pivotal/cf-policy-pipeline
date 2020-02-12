@@ -1,0 +1,18 @@
+---
+platform: linux
+    
+image_resource:
+  type: docker-image
+  source:
+    repository: patrickhuber/policy-base
+    tag: "1.2"
+    
+inputs:
+- name: results
+    
+run:
+  path: source-repo/tasks/alert-rows-exist/task.sh
+
+params:
+  SKIP_HEADER: true
+  FILE: report.csv

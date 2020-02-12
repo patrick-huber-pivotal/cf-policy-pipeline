@@ -14,7 +14,7 @@ resources:
     username: ((git_username))
     password: ((git_password))
 
-- name: azure-bucket
+- name: bucket
   type: azure-blobstore
   source:
     storage_account_name: ((storage_account_name))
@@ -38,18 +38,18 @@ jobs:
       OM_SKIP_SSL_VALIDATION: ((om_skip_ssl_validation))
   - task: populate-database
     file: source-repo/tasks/populate-database/task.yml  
-  - put: azure-bucket
+  - put: bucket
     params:
       file: database/database.db
 
 - name: apps-without-autoscaler-query
   plan:
   - get: source-repo
-  - get: azure-bucket
+  - get: bucket
   - task: query
     file: source-repo/tasks/query/task.yml
     input_mapping:
-      database: azure-bucket
+      database: bucket
     params:
       QUERY: |
          SELECT a.Name as APP, 
@@ -70,30 +70,54 @@ jobs:
          WHERE sb.ID is null
            and o.Name not in ("system");
 
-- name: certificate-expiration 
+- name: certificates-query
   plan:
   - get: source-repo
-  - get: azure-bucket
+  - get: bucket
   - task: query
     file: source-repo/tasks/query/task.yml
     input_mapping:
-      database: azure-bucket
+      database: bucket
     params:
       QUERY: |
         SELECT * 
         FROM CERTIFICATES
         ORDER BY datetime(VALID_UNTIL) ASC;
 
-- name: certificate-authority-expiration 
+- name: certificate-authorities-query
   plan:
   - get: source-repo
-  - get: azure-bucket
+  - get: bucket
   - task: query
     file: source-repo/tasks/query/task.yml
     input_mapping:
-      database: azure-bucket
+      database: bucket
     params:
       QUERY: |
         SELECT * 
         FROM CERTIFICATE_AUTHORITIES
         ORDER BY datetime(EXPIRES_ON) ASC;
+
+- name: certificates-expiring-in-3-months-query
+  plan: 
+  - get: source-repo
+  - get: bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: bucket
+    output_mapping:
+      results: results
+    params:
+      QUERY: |
+        SELECT * 
+        FROM CERTIFICATE_AUTHORITIES
+        ORDER BY datetime(EXPIRES_ON) ASC;
+  - in_parallel:
+    - task: alert
+      file: source-repo/tasks/alert-rows-exist/task.yml
+      input_mapping:
+        results: results
+      params:
+        SKIP_HEADER: true
+        FILE: report.csv
