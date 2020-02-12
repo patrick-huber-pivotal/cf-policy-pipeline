@@ -13,8 +13,12 @@ if [ "$SKIP_HEADER" == true ]; then
 fi
 
 FILE_PATH=$INPUT_DIR/$FILE
-COUNT=$(wc -l $FILE_PATH)
+if [ ! -f "$FILE_PATH"]; then
+    >&2 echo "file $FILE_PATH does not exist"
+    exit 1
+fi
 
+COUNT=$(wc -l < $FILE_PATH)
 if [ $COUNT -gt $THRESHOLD ]; then
     >&2 echo "count $COUNT has exceeded the threshold $THRESHOLD"
     exit 1
