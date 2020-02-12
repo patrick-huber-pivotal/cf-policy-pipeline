@@ -15,9 +15,10 @@ fi
 FILE_PATH=$INPUT_DIR/$FILE
 COUNT=$(wc -l $FILE_PATH)
 
-if ["$COUNT" -gt "$THRESHOLD" ]; then
+if [ $COUNT -gt $THRESHOLD ]; then
     >&2 echo "count $COUNT has exceeded the threshold $THRESHOLD"
     exit 1
 fi
 
 echo "count $COUNT is below threshold $THRESHOLD"
+exit 1
