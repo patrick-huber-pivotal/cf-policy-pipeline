@@ -118,6 +118,7 @@ jobs:
       file: source-repo/tasks/alert-rows-exist/task.yml
       input_mapping:
         results: results
+        source-repo: source-repo
       params:
         SKIP_HEADER: true
         FILE: report.csv
