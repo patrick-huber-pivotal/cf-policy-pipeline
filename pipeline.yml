@@ -111,8 +111,8 @@ jobs:
     params:
       QUERY: |
         SELECT * 
-        FROM CERTIFICATE_AUTHORITIES
-        ORDER BY datetime(EXPIRES_ON) ASC;
+        FROM CERTIFICATES
+        WHERE date(VALID_UNTIL) <= date('now', '3 months');
   - in_parallel:
     - task: alert
       file: source-repo/tasks/alert-rows-exist/task.yml
