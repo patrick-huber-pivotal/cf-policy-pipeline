@@ -98,7 +98,7 @@ jobs:
         FROM CERTIFICATE_AUTHORITIES
         ORDER BY datetime(EXPIRES_ON) ASC;
 
-- name: certificates-expiring-in-3-months-query
+- name: certificates-expiring-in-3-months
   plan: 
   - get: source-repo
   - get: bucket
