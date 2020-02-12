@@ -13,7 +13,7 @@ if [ "$SKIP_HEADER" == true ]; then
 fi
 
 FILE_PATH=$INPUT_DIR/$FILE
-if [ ! -f "$FILE_PATH"]; then
+if [ ! -f "$FILE_PATH" ]; then
     >&2 echo "file $FILE_PATH does not exist"
     exit 1
 fi
@@ -25,4 +25,4 @@ if [ $COUNT -gt $THRESHOLD ]; then
 fi
 
 echo "count $COUNT is below threshold $THRESHOLD"
-exit 1
+exit 0
