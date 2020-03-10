@@ -89,7 +89,7 @@ sqlite3 $OUTPUT_DIR/database.db < commands.txt
 
 # create csv files
 cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid' -r > $INPUT_DIR/apps.csv
-cat $INPUT_DIR/app-summaries.json | jq '.[] | .guid+"|"+.running_instances' -r > $INPUT_DIR/app-summaries.csv
+cat $INPUT_DIR/app-summaries.json | jq '.[] | .guid+"|"+(.running_instances|tostring)' -r > $INPUT_DIR/app-summaries.csv
 cat $INPUT_DIR/spaces.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.organization.data.guid' -r > $INPUT_DIR/spaces.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.labels | to_entries | select((. | length) > 0) | .[] | $parent.guid + "|" + .key + "|" + .value ' -r > $INPUT_DIR/org_labels.csv
