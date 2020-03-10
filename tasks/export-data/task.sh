@@ -28,7 +28,7 @@ do
   fi
   echo "exporting app information for $app"
   cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries.json
-  let "count++"
+  ((count = count + 1)) || true 
 done  
 echo "]" >> $OUTPUT_DIR/app-summaries.json
 exit 1
