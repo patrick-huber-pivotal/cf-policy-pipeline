@@ -26,7 +26,6 @@ do
   if [[ "$count" -gt 0 ]]; then
     echo "," >> $OUTPUT_DIR/app-summaries.json
   fi
-  echo "exporting app information for $app"
   cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries.json
   ((count = count + 1)) || true 
 done  
