@@ -29,3 +29,4 @@ while read -r app; do
   let "count++"
 done < $(cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r)
 echo "]" >> app-summaries.json
+exit 1
