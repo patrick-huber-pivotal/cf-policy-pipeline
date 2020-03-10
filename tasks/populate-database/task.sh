@@ -12,7 +12,11 @@ cat > commands.txt <<EOF
 CREATE TABLE APPS(
     ID          CHAR(37)    NOT NULL    PRIMARY KEY,
     NAME        TEXT        NOT NULL,
-    SPACE_ID    CHAR(37)    NOT NULL,
+    SPACE_ID    CHAR(37)    NOT NULL
+);
+
+CREATE TABLE APP_SUMMARIES(
+    ID          CHAR(37)    NOT NULL    PRIMARY KEY,
     INSTANCES   INTEGER     NOT NULL
 );
 
@@ -84,7 +88,8 @@ EOF
 sqlite3 $OUTPUT_DIR/database.db < commands.txt
 
 # create csv files
-cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid+"|0"' -r > $INPUT_DIR/apps.csv
+cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid' -r > $INPUT_DIR/apps.csv
+cat $INPUT_DIR/app-summaries.json | jq '.[] | .guid+"|"+.running_instances' -r > $INPUT_DIR/app-summaries.csv
 cat $INPUT_DIR/spaces.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.organization.data.guid' -r > $INPUT_DIR/spaces.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.labels | to_entries | select((. | length) > 0) | .[] | $parent.guid + "|" + .key + "|" + .value ' -r > $INPUT_DIR/org_labels.csv
@@ -100,6 +105,7 @@ cat $INPUT_DIR/certificate_authorities.json | jq '.certificate_authorities[] | .
 cat > bulk_insert.txt <<EOF
 .separator |
 .import $INPUT_DIR/apps.csv APPS
+.import $INPUT_DIR/app_summaries.csv APP_SUMMARIES
 .import $INPUT_DIR/spaces.csv SPACES
 .import $INPUT_DIR/services.csv SERVICES
 .import $INPUT_DIR/service-instances.csv SERVICE_INSTANCES
