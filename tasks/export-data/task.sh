@@ -27,5 +27,5 @@ while read -r app; do
   fi
   cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries.json
   let "count++"
-done << $(cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r)
+done < $(cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r)
 echo "]" >> app-summaries.json
