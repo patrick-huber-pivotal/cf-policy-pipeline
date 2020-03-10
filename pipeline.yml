@@ -70,6 +70,30 @@ jobs:
          WHERE sb.ID is null
            and o.Name not in ("system");
 
+- name: apps-with-one-instance-query
+  plan:
+  - get: source-repo
+  - get: bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: bucket
+    params:
+      QUERY: |
+        SELECT a.Name as APP, 
+	       sp.Name as SPACE, 
+	       o.Name as ORG,
+               su.INSTANCES as INSTANCES
+        FROM APPS a
+        LEFT JOIN APP_SUMMARIES su
+          on su.ID = a.ID         
+        LEFT JOIN SPACES sp
+          on a.SPACE_ID = sp.ID
+        LEFT JOIN ORGANIZATIONS o
+          on o.ID = sp.ORGANIZATION_ID
+        WHERE su.Instances = 1
+          and o.Name not in ("system");
+
 - name: certificates-query
   plan:
   - get: source-repo
