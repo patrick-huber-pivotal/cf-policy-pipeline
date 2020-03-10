@@ -21,7 +21,7 @@ om curl --path /api/v0/certificate_authorities > $OUTPUT_DIR/certificate_authori
 # export app summary data for each app
 count=0
 echo "[" > $OUTPUT_DIR/app-summaries.json
-$(cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r) | while read -r app
+cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r | while read -r app
 do
   if [[ "$count" -gt 0 ]]; then
     echo "," >> $OUTPUT_DIR/app-summaries.json
