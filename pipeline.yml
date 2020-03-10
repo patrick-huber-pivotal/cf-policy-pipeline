@@ -81,8 +81,8 @@ jobs:
     params:
       QUERY: |
         SELECT a.Name as APP, 
-	       sp.Name as SPACE, 
-	       o.Name as ORG,
+               sp.Name as SPACE, 
+               o.Name as ORG,
                su.INSTANCES as INSTANCES
         FROM APPS a
         LEFT JOIN APP_SUMMARIES su
