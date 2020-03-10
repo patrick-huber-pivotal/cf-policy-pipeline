@@ -30,4 +30,3 @@ do
   ((count = count + 1)) || true 
 done  
 echo "]" >> $OUTPUT_DIR/app-summaries.json
-exit 1
