@@ -105,7 +105,7 @@ cat $INPUT_DIR/certificate_authorities.json | jq '.certificate_authorities[] | .
 cat > bulk_insert.txt <<EOF
 .separator |
 .import $INPUT_DIR/apps.csv APPS
-.import $INPUT_DIR/app_summaries.csv APP_SUMMARIES
+.import $INPUT_DIR/app-summaries.csv APP_SUMMARIES
 .import $INPUT_DIR/spaces.csv SPACES
 .import $INPUT_DIR/services.csv SERVICES
 .import $INPUT_DIR/service-instances.csv SERVICE_INSTANCES
