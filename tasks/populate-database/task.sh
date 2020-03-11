@@ -60,6 +60,24 @@ CREATE TABLE ORGANIZATION_LABELS(
     VALUE               TEXT            NOT NULL
 );
 
+CREATE TABLE DOMAINS(
+    ID                  CHAR(37)        NOT NULL  PRIMARY KEY,
+    NAME                TEXT            NOT NULL
+);
+
+CREATE TABLE ROUTES(
+    ID                  CHAR(37)        NOT NULL PRIMARY KEY,
+    HOST                TEXT            NOT NULL,
+    PATH                TEXT,
+    SPACE_ID            CHAR(37)        NOT NULL,
+    DOMAIN_ID           CHAR(37)        NOT NULL
+);
+
+CREATE TABLE ROUTE_MAPPINGS(
+    ROUTE_ID            CHAR(37)        NOT NULL,
+    APP_ID              CHAR(37)        NOT NULL
+);
+
 CREATE TABLE SERVICE_BINDINGS(
     ID                      CHAR(37)    NOT NULL    PRIMARY KEY,
     APP_ID                  CHAR(37)    NOT NULL,
@@ -90,10 +108,12 @@ sqlite3 $OUTPUT_DIR/database.db < commands.txt
 # create csv files
 cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid' -r > $INPUT_DIR/apps.csv
 cat $INPUT_DIR/app-summaries.json | jq '.[] | .guid+"|"+(.running_instances|tostring)' -r > $INPUT_DIR/app-summaries.csv
+cat $INPUT_DIR/domains.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/domains.csv
 cat $INPUT_DIR/spaces.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.organization.data.guid' -r > $INPUT_DIR/spaces.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.labels | to_entries | select((. | length) > 0) | .[] | $parent.guid + "|" + .key + "|" + .value ' -r > $INPUT_DIR/org_labels.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.annotations | to_entries | select((. | length) > 0) | .[] | $parent.guid + "|" + .key + "|" + .value ' -r > $INPUT_DIR/org_annotations.csv
+cat $INPUT_DIR/routes.json | jq '.resources[] | .guid + "|" + .host + "|" + .path + "|" + .relationships.space.data.guid + "|" + .relationships.domain.data.guid ' -r > $INPUT_DIR/routes.csv
 cat $INPUT_DIR/services.json | jq '.resources[] | .metadata.guid+"|"+.entity.label' -r > $INPUT_DIR/services.csv
 cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-plans.csv
 cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-instances.csv
@@ -106,6 +126,7 @@ cat > bulk_insert.txt <<EOF
 .separator |
 .import $INPUT_DIR/apps.csv APPS
 .import $INPUT_DIR/app-summaries.csv APP_SUMMARIES
+.import $INPUT_DIR/domains.csv DOMAINS
 .import $INPUT_DIR/spaces.csv SPACES
 .import $INPUT_DIR/services.csv SERVICES
 .import $INPUT_DIR/service-instances.csv SERVICE_INSTANCES
@@ -113,9 +134,11 @@ cat > bulk_insert.txt <<EOF
 .import $INPUT_DIR/orgs.csv ORGANIZATIONS
 .import $INPUT_DIR/org_labels.csv ORGANIZATION_LABELS
 .import $INPUT_DIR/org_annotations.csv ORGANIZATION_ANNOTATIONS
+.import $INPUT_DIR/routes.csv ROUTES
 .import $INPUT_DIR/service-bindings.csv SERVICE_BINDINGS
 .import $INPUT_DIR/certificates.csv CERTIFICATES
 .import $INPUT_DIR/certificate_authorities.csv CERTIFICATE_AUTHORITIES
 EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
+exit 1
