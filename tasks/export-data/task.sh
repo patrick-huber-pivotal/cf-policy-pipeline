@@ -30,7 +30,7 @@ do
     echo "," >> $OUTPUT_DIR/app-summaries.json
   fi
   cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries.json
-  cf curl /v3/apps/$app/routes | jq --arg app $app '{app: $app", route: .resources[].guid}' -r >> $OUTPUT_DIR/mapped-routes-temp.json 
+  cf curl /v3/apps/$app/routes | jq --arg app $app '{app: "$app", route: .resources[].guid}' -r >> $OUTPUT_DIR/mapped-routes-temp.json 
   ((count = count + 1)) || true 
 done  
 echo "]" >> $OUTPUT_DIR/app-summaries.json
