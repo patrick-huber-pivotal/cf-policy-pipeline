@@ -21,6 +21,7 @@ om curl --path /api/v0/deployed/certificates > $OUTPUT_DIR/certificates.json
 om curl --path /api/v0/certificate_authorities > $OUTPUT_DIR/certificate_authorities.json
 
 # export app summary data for each app
+# export route mappings for each app
 count=0
 echo "[" > $OUTPUT_DIR/app-summaries.json
 cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r | while read -r app
@@ -29,6 +30,9 @@ do
     echo "," >> $OUTPUT_DIR/app-summaries.json
   fi
   cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries.json
+  cf curl /v3/apps/$app/routes | jq --arg app $app '{app: $app", route: .resources[].guid}' -r >> $OUTPUT_DIR/mapped-routes-temp.json 
   ((count = count + 1)) || true 
 done  
 echo "]" >> $OUTPUT_DIR/app-summaries.json
+jq -s . $OUTPUT_DIR/mapped-routes-temp.json > $OUTPUT_DIR/mapped-routes.json
+rm $OUTPUT_DIR/mapped-routes-temp.json
