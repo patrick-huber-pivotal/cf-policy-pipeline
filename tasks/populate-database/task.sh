@@ -114,6 +114,7 @@ cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/o
 cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.labels | to_entries | select((. | length) > 0) | .[] | $parent.guid + "|" + .key + "|" + .value ' -r > $INPUT_DIR/org_labels.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | . as $parent | .metadata.annotations | to_entries | select((. | length) > 0) | .[] | $parent.guid + "|" + .key + "|" + .value ' -r > $INPUT_DIR/org_annotations.csv
 cat $INPUT_DIR/routes.json | jq '.resources[] | .guid + "|" + .host + "|" + .path + "|" + .relationships.space.data.guid + "|" + .relationships.domain.data.guid ' -r > $INPUT_DIR/routes.csv
+cat $INPUT_DIR/route-mappings.json | jq '.[] | .route + "|" + .app' -r > $INPUT_DIR/route-mappings.csv
 cat $INPUT_DIR/services.json | jq '.resources[] | .metadata.guid+"|"+.entity.label' -r > $INPUT_DIR/services.csv
 cat $INPUT_DIR/service-plans.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-plans.csv
 cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.entity.name+"|"+.entity.service_guid' -r > $INPUT_DIR/service-instances.csv
@@ -135,6 +136,7 @@ cat > bulk_insert.txt <<EOF
 .import $INPUT_DIR/org_labels.csv ORGANIZATION_LABELS
 .import $INPUT_DIR/org_annotations.csv ORGANIZATION_ANNOTATIONS
 .import $INPUT_DIR/routes.csv ROUTES
+.import $INPUT_DIR/route-mappings.csv ROUTE_MAPPINGS
 .import $INPUT_DIR/service-bindings.csv SERVICE_BINDINGS
 .import $INPUT_DIR/certificates.csv CERTIFICATES
 .import $INPUT_DIR/certificate_authorities.csv CERTIFICATE_AUTHORITIES
