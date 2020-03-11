@@ -36,4 +36,3 @@ done
 echo "]" >> $OUTPUT_DIR/app-summaries.json
 jq -s . $OUTPUT_DIR/mapped-routes-temp.json > $OUTPUT_DIR/mapped-routes.json
 rm $OUTPUT_DIR/mapped-routes-temp.json
-exit 1
