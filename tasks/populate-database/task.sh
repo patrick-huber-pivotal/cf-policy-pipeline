@@ -143,4 +143,3 @@ cat > bulk_insert.txt <<EOF
 EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
-exit 1
