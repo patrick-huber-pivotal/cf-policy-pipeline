@@ -32,6 +32,7 @@ jobs:
       CF_USERNAME: ((cf_username))
       CF_TARGET: ((cf_target))
       CF_PASSWORD: ((cf_password))
+      CF_SYS_DOMAIN: ((cf_sys_domain))
       OM_USERNAME: ((om_username))
       OM_PASSWORD: ((om_password))
       OM_TARGET: ((om_target))

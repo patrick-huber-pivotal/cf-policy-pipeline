@@ -23,7 +23,13 @@ params:
     CF_TARGET:
     # The cloud foundry password to login and query the system (cf cli password)
     CF_PASSWORD:
+    # The cloud foundry system domain
+    CF_SYS_DOMAIN:
+    # The ops manager url
     OM_TARGET:
+    # The ops manager username
     OM_USERNAME:
+    # The ops manager password
     OM_PASSWORD:
+    # Skip ssl validation for the ops manager api
     OM_SKIP_SSL_VALIDATION:

@@ -1,4 +1,5 @@
 cf_target: api.sys.dell.azure.pivotal.rocks
+cf_sys_domain: sys.dell.azure.pivotal.rocks
 exclude_orgs: 
 - system
 container: cfdata
