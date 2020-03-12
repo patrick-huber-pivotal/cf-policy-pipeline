@@ -95,6 +95,44 @@ jobs:
         WHERE su.Instances = 1
           and o.Name not in ("system");
 
+- name: apps-without-domain-route
+  plan:
+  - get: source-repo
+  - get: bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: bucket
+    params:
+      QUERY: |
+        SELECT APP,
+               SPACE,
+               ORG
+        FROM(
+            SELECT a.Name as APP,
+                   sp.Name as SPACE,
+                   o.Name as ORG,
+                   SUM(
+                     CASE d.Name
+                   WHEN 'gslb.dell.azure.pivotal.rocks'
+                     THEN 1
+                   ELSE 0
+                   END) as COUNT
+            FROM APPS a
+            INNER JOIN SPACES sp
+              on a.SPACE_ID = sp.ID
+            INNER JOIN ORGANIZATIONS o
+              on o.ID = sp.ORGANIZATION_ID
+            LEFT JOIN ROUTE_MAPPINGS rm
+              on rm.APP_ID = a.ID
+            LEFT JOIN ROUTES r
+              on r.ID = rm.ROUTE_ID
+            LEFT JOIN DOMAINS d
+              on d.ID = r.DOMAIN_ID
+            WHERE o.Name not in ("system")
+            GROUP BY a.Name, sp.Name, o.Name
+        ) WHERE COUNT = 0;
+
 - name: certificates-query
   plan:
   - get: source-repo
