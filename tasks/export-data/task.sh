@@ -55,4 +55,3 @@ done
 jq -s . $OUTPUT_DIR/app-autoscaler-rules-temp.json >> $OUTPUT_DIR/app-autoscaler-rules.json
 rm $OUTPUT_DIR/app-autoscaler-rules-temp.json
 
-exit 1
