@@ -3,10 +3,9 @@ FROM ubuntu:bionic as build
 ENV DEBIAN_FRONTEND noninteractive
 
 # update packages
-RUN apt-get update 
-
 # install wget, gcc and tcl packages
-RUN apt-get install wget build-essential tcl bsdmainutils -y
+RUN apt-get update && \
+    apt-get install wget build-essential tcl bsdmainutils -y
 
 # download and extract sqlite
 RUN wget -O sqlite.tar.gz \
@@ -49,4 +48,11 @@ COPY --from=build /usr/bin/yq /usr/bin/yq
 COPY --from=build /usr/bin/cf /usr/bin/cf
 COPY --from=build /usr/bin/om /usr/bin/om
 COPY --from=build /usr/bin/column /usr/bin/column
+RUN apt-get update \
+    && apt-get install -y curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && rm -Rf /usr/share/doc \
+	&& rm -Rf /usr/share/man \
+    && apt-get clean
+
 CMD /bin/bash

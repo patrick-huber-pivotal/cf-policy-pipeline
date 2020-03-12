@@ -1,0 +1,1 @@
+docker build . -t patrickhuber/policy-base:1.3
