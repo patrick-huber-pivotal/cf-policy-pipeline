@@ -122,6 +122,8 @@ sqlite3 $OUTPUT_DIR/database.db < commands.txt
 # create csv files
 cat $INPUT_DIR/apps.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.space.data.guid' -r > $INPUT_DIR/apps.csv
 cat $INPUT_DIR/app-summaries.json | jq '.[] | .guid+"|"+(.running_instances|tostring)' -r > $INPUT_DIR/app-summaries.csv
+cat $INPUT_DIR/app-autoscalers.json | jq '.[] | .guid+"|"+(if .enabled then "1" else "0" end)+"|"+(.instance_limits.min | tostring)+"|"+(.instance_limits.max | tostring)'  -r > $INPUT_DIR/app-autoscalers.csv
+cat $INPUT_DIR/app-autoscaler-rules.json | jq '.[] | .guid +"|"+.rule_type+"|"+(.threshold.min | tostring)+"|"+(.threshold.max | tostring)' -r > $INPUT_DIR/app-autoscaler-rules.csv
 cat $INPUT_DIR/domains.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/domains.csv
 cat $INPUT_DIR/spaces.json | jq '.resources[] | .guid+"|"+.name+"|"+.relationships.organization.data.guid' -r > $INPUT_DIR/spaces.csv
 cat $INPUT_DIR/orgs.json | jq '.resources[] | .guid+"|"+.name' -r > $INPUT_DIR/orgs.csv
