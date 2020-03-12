@@ -44,7 +44,7 @@ curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps" -H "Authorization: $(cf o
 count=0
 cat $OUTPUT_DIR/app-autoscalers.json | jq '.resources[].guid' -r | while read -r app
 do
-   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps/$app/rules" -H "Authorization: $(cf oauth-token" | `
+   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps/$app/rules" -H "Authorization: $(cf oauth-token" | \
    jq '.resources[]' >> $OUTPUT_DIR/app-autoscaler-rules-temp.json
 done
 jq -s . $OUTPUT_DIR/app-autoscaler-rules-temp.json > $OUTPUT_DIR/app-autoscaler-rules.json
