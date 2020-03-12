@@ -32,11 +32,12 @@ jq -s . $OUTPUT_DIR/route-mappings-temp.json > $OUTPUT_DIR/route-mappings.json
 rm $OUTPUT_DIR/app-summaries-temp.json
 rm $OUTPUT_DIR/route-mappings-temp.json
 
+export CF_OAUTH_TOKEN=$(cf oauth-token)
 # loop over each space and query the autoscaler apps for that space
 cat $OUTPUT_DIR/spaces.json | jq '.resources[].guid' -r | while read -r space
 do
    curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps?space_id=$space" \
-        -H "Authorization: $(cf oauth-token)" \
+        -H "Authorization: $CF_OAUTH_TOKEN" \
         | jq '.resources[] | .' >> $OUTPUT_DIR/app-autoscalers-temp.json
 done
 jq -s . $OUTPUT_DIR/app-autoscalers-temp.json > $OUTPUT_DIR/app-autoscalers.json
@@ -47,10 +48,10 @@ rm $OUTPUT_DIR/app-autoscalers-temp.json
 
 cat $OUTPUT_DIR/app-autoscalers.json | jq '.[].guid' -r | while read -r app
 do
-   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps/$app/rules" -H "Authorization: $(cf oauth-token)" \
+   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps/$app/rules" -H "Authorization: $CF_OAUTH_TOKEN" \
    | jq '.resources[]' >> $OUTPUT_DIR/app-autoscaler-rules-temp.json
 done
-jq -s . $OUTPUT_DIR/app-autoscaler-rules-temp.json > $OUTPUT_DIR/app-autoscaler-rules.json
+jq -s . $OUTPUT_DIR/app-autoscaler-rules-temp.json >> $OUTPUT_DIR/app-autoscaler-rules.json
 rm $OUTPUT_DIR/app-autoscaler-rules-temp.json
 
 exit 1
