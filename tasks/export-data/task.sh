@@ -39,7 +39,7 @@ rm $OUTPUT_DIR/route-mappings-temp.json
 
 # export app autoscaler information for each app
 # loop over each app and pull its autoscaler rules
-curl "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps" -H "Authorization: $(cf oauth-token)" > $OUTPUT_DIR/app-autoscalers.json
+curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps" -H "Authorization: $(cf oauth-token)" > $OUTPUT_DIR/app-autoscalers.json
 
 count=0
 cat $OUTPUT_DIR/app-autoscalers.json | jq '.resources[].guid' -r | while read -r app
