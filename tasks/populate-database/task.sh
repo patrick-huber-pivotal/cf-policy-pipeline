@@ -20,6 +20,20 @@ CREATE TABLE APP_SUMMARIES(
     INSTANCES   INTEGER     NOT NULL
 );
 
+CREATE TABLE APP_AUTOSCALERS(
+    APP_ID       CHAR(37) NOT NULL PRIMARY KEY,
+    ENABLED      INTEGER NOT NULL,
+    INSTANCE_MIN INTEGER NOT NULL,
+    INSTANCE_MAX INTEGER NOT NULL
+);
+
+CREATE TABLE APP_AUTOSCALER_RULES(
+    APP_ID       CHAR(37) NOT NULL,
+    RULE_TYPE    VARCHAR(50) NOT NULL,
+    METRIC_MIN   INTEGER NOT NULL,
+    METRIC_MAX   INTEGER NOT NULL 
+);
+
 CREATE TABLE SPACES(
     ID              CHAR(37)    NOT NULL    PRIMARY KEY,
     NAME            TEXT        NOT NULL,
@@ -127,6 +141,8 @@ cat > bulk_insert.txt <<EOF
 .separator |
 .import $INPUT_DIR/apps.csv APPS
 .import $INPUT_DIR/app-summaries.csv APP_SUMMARIES
+.import $INPUT_DIR/app-autoscalers.csv APP_AUTOSCALERS
+.import $INPUT_DIR/app-autoscaler-rules.csv APP_AUTOSCALER_RULES
 .import $INPUT_DIR/domains.csv DOMAINS
 .import $INPUT_DIR/spaces.csv SPACES
 .import $INPUT_DIR/services.csv SERVICES
