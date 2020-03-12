@@ -22,31 +22,35 @@ om curl --path /api/v0/certificate_authorities > $OUTPUT_DIR/certificate_authori
 
 # export app summary data for each app
 # export route mappings for each app
-count=0
-echo "[" > $OUTPUT_DIR/app-summaries.json
 cat $OUTPUT_DIR/apps.json | jq '.resources[].guid' -r | while read -r app
 do
-  if [[ "$count" -gt 0 ]]; then
-    echo "," >> $OUTPUT_DIR/app-summaries.json
-  fi
-  cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries.json
+  cf curl /v2/apps/$app/summary >> $OUTPUT_DIR/app-summaries-temp.json
   cf curl /v3/apps/$app/routes | jq --arg app "$app" '{app: $app, route: .resources[].guid}' -r >> $OUTPUT_DIR/route-mappings-temp.json 
-  ((count = count + 1)) || true 
 done  
-echo "]" >> $OUTPUT_DIR/app-summaries.json
+jq -s . $OUTPUT_DIR/app-summaries-temp.json > $OUTPUT_DIR/app-summaries.json
 jq -s . $OUTPUT_DIR/route-mappings-temp.json > $OUTPUT_DIR/route-mappings.json
+rm $OUTPUT_DIR/app-summaries-temp.json
 rm $OUTPUT_DIR/route-mappings-temp.json
+
+# loop over each space and query the autoscaler apps for that space
+cat $OUTPUT_DIR/spaces.json | jq '.resources[].guid' -r | while read -r space
+do
+   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps?space_id=$space" \
+        -H "Authorization: $(cf oauth-token)" \
+        | jq '.resources[] | .' >> $OUTPUT_DIR/app-autoscalers-temp.json
+done
+jq -s . $OUTPUT_DIR/app-autoscalers-temp.json > $OUTPUT_DIR/app-autoscalers.json
+rm $OUTPUT_DIR/app-autoscalers-temp.json
 
 # export app autoscaler information for each app
 # loop over each app and pull its autoscaler rules
-curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps" -H "Authorization: $(cf oauth-token)" > $OUTPUT_DIR/app-autoscalers.json
 
-count=0
-cat $OUTPUT_DIR/app-autoscalers.json | jq '.resources[].guid' -r | while read -r app
+cat $OUTPUT_DIR/app-autoscalers.json | jq '.[].guid' -r | while read -r app
 do
    curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps/$app/rules" -H "Authorization: $(cf oauth-token" \
    | jq '.resources[]' >> $OUTPUT_DIR/app-autoscaler-rules-temp.json
 done
 jq -s . $OUTPUT_DIR/app-autoscaler-rules-temp.json > $OUTPUT_DIR/app-autoscaler-rules.json
-rm $OUTPUT_DIR/app-autoscaler-rules.json
+rm $OUTPUT_DIR/app-autoscaler-rules-temp.json
+
 exit 1
