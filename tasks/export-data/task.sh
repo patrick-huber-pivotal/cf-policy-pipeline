@@ -35,8 +35,9 @@ rm $OUTPUT_DIR/route-mappings-temp.json
 export CF_OAUTH_TOKEN=$(cf oauth-token)
 # loop over each space and query the autoscaler apps for that space
 cat $OUTPUT_DIR/spaces.json | jq '.resources[].guid' -r | while read -r space
+touch $OUTPUT_DIR/app-autoscalers-temp.json
 do
-   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps?space_id=$space" \
+   curl -k "https://autoscale.$CF_SYS_DOMAIN/api/v2/apps?space_guid=$space" \
         -H "Authorization: $CF_OAUTH_TOKEN" \
         | jq '.resources[] | .' >> $OUTPUT_DIR/app-autoscalers-temp.json
 done
