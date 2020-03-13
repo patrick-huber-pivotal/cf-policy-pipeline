@@ -17,6 +17,7 @@ cf curl /v2/service_instances > $OUTPUT_DIR/service-instances.json
 cf curl /v2/service_bindings > $OUTPUT_DIR/service-bindings.json
 cf curl /v2/service_plans > $OUTPUT_DIR/service-plans.json
 cf curl /v2/services > $OUTPUT_DIR/services.json
+cf curl /networking/v1/external/policies > $OUTPUT_DIR/networking-policies.json
 om curl --path /api/v0/deployed/certificates > $OUTPUT_DIR/certificates.json
 om curl --path /api/v0/certificate_authorities > $OUTPUT_DIR/certificate_authorities.json
 

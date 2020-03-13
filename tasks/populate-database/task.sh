@@ -115,6 +115,14 @@ CREATE TABLE CERTIFICATE_AUTHORITIES(
     EXPIRES_ON		TEXT,
     ACTIVE		INTEGER
 );
+
+CREATE TABLE NETWORKING_POLICIES(
+    SOURCE_ID          CHAR(37) NOT NULL,
+    DESTINATION_ID     CHAR(37) NOT NULL,
+    PROTOCOL           CHAR(10) NOT NULL,
+    START_PORT         INTEGER NOT NULL,
+    END_PORT           INTEGER NOT NULL
+);
 EOF
 
 # Create Schema
@@ -138,6 +146,7 @@ cat $INPUT_DIR/service-instances.json | jq '.resources[] | .metadata.guid+"|"+.e
 cat $INPUT_DIR/service-bindings.json | jq '.resources[] | .metadata.guid+"|"+.entity.app_guid+"|"+.entity.service_instance_guid' -r > $INPUT_DIR/service-bindings.csv
 cat $INPUT_DIR/certificates.json | jq '.certificates[] | .product_guid+"|"+.variable_path+"|"+.valid_from+"|"+.valid_until+"|"+.property_reference' -r > $INPUT_DIR/certificates.csv
 cat $INPUT_DIR/certificate_authorities.json | jq '.certificate_authorities[] | .guid + "|" + .issuer + "|" + .created_on + "|" + .expires_on + "|" + (.active | tostring)' > $INPUT_DIR/certificate_authorities.csv
+cat $INPUT_DIR/networking-policies.json | jq '.policies[] | .source.id + "|" + .destination.id + "|" + .destination.protocol + "|" + (.destination.ports.start|tostring) + "|" + (.destination.ports.end|tostring)' > $INPUT_DIR/networking-policies.csv
 
 # populate database
 cat > bulk_insert.txt <<EOF
@@ -159,6 +168,7 @@ cat > bulk_insert.txt <<EOF
 .import $INPUT_DIR/service-bindings.csv SERVICE_BINDINGS
 .import $INPUT_DIR/certificates.csv CERTIFICATES
 .import $INPUT_DIR/certificate_authorities.csv CERTIFICATE_AUTHORITIES
+.import $INPUT_DIR/networking-policies.csv NETWORKING_POLICIES
 EOF
 
 sqlite3 $OUTPUT_DIR/database.db < bulk_insert.txt
