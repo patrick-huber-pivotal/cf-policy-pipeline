@@ -185,3 +185,41 @@ jobs:
       params:
         SKIP_HEADER: true
         FILE: report.csv
+
+- name: apps-with-autoscaler-misconfiguration
+  plan: 
+  - get: source-repo
+  - get: bucket
+  - task: query
+    file: source-repo/tasks/query/task.yml
+    input_mapping:
+      database: bucket
+    output_mapping:
+      results: results
+    params:
+      QUERY: |
+        SELECT * FROM(
+            SELECT a.name as APP,
+                   s.name as SPACE,
+                   o.name as ORG,
+                   CASE 
+                   WHEN npb.DESTINATION_ID is null 
+                     THEN 0
+                   ELSE 1
+                   END as IS_C2C_BACKEND,
+                   aar.RULE_TYPE
+            FROM APPS a 
+            INNER JOIN SPACES s 
+              on a.SPACE_ID = s.ID
+            INNER JOIN ORGANIZATIONS o
+              on s.ORGANIZATION_ID = o.ID
+            INNER JOIN APP_AUTOSCALERS aa
+              on aa.APP_ID = a.ID
+            INNER JOIN APP_AUTOSCALER_RULES aar
+              on aar.APP_ID = aa.APP_ID
+            LEFT JOIN NETWORKING_POLICIES npb
+              on npb.DESTINATION_ID = a.ID
+        ) WHERE IS_C2C_BACKEND = 1 AND (
+                RULE_TYPE == 'http_latency'
+                OR RULE_TYPE == 'http_throughput')
+             OR IS_C2C_BACKEND = 0 AND RULE_TYPE == 'cpu'
